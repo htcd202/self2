@@ -19,3 +19,4 @@ docs/crowdin.py
 backup/
 build/*
 config.py
+.env

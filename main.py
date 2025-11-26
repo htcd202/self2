@@ -1,7 +1,35 @@
 import discord
 from discord.ext import commands
 import requests
-from config import USER_TOKEN, CHANNEL_ID_NGUON, CHANNEL_ID_DICH 
+import os
+from dotenv import load_dotenv
+
+# Load biến môi trường từ file .env
+load_dotenv()
+
+# Đọc từ environment variables (ưu tiên) hoặc fallback về config.py
+USER_TOKEN = os.getenv('USER_TOKEN')
+CHANNEL_ID_NGUON_STR = os.getenv('CHANNEL_ID_NGUON')
+CHANNEL_ID_DICH_STR = os.getenv('CHANNEL_ID_DICH')
+
+CHANNEL_ID_NGUON = int(CHANNEL_ID_NGUON_STR) if CHANNEL_ID_NGUON_STR else None
+CHANNEL_ID_DICH = int(CHANNEL_ID_DICH_STR) if CHANNEL_ID_DICH_STR else None
+
+# Fallback về config.py nếu không có trong .env
+if not USER_TOKEN or not CHANNEL_ID_NGUON or not CHANNEL_ID_DICH:
+    try:
+        from config import USER_TOKEN as CFG_TOKEN, CHANNEL_ID_NGUON as CFG_NGUON, CHANNEL_ID_DICH as CFG_DICH
+        USER_TOKEN = USER_TOKEN or CFG_TOKEN
+        CHANNEL_ID_NGUON = CHANNEL_ID_NGUON or CFG_NGUON
+        CHANNEL_ID_DICH = CHANNEL_ID_DICH or CFG_DICH
+    except ImportError:
+        pass
+
+# Kiểm tra token và channel IDs
+if not USER_TOKEN:
+    raise ValueError("USER_TOKEN không được tìm thấy! Vui lòng tạo file .env hoặc config.py")
+if not CHANNEL_ID_NGUON or not CHANNEL_ID_DICH:
+    raise ValueError("CHANNEL_ID_NGUON và CHANNEL_ID_DICH không được tìm thấy! Vui lòng tạo file .env hoặc config.py") 
 
 # Địa chỉ API Endpoint TÙY CHỈNH để gửi tin nhắn
 
